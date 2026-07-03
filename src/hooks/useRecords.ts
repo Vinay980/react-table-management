@@ -5,6 +5,5 @@ export function useRecords(page: number, pageSize: number) {
   return useQuery({
     queryKey: ["records", page, pageSize],
     queryFn: () => getRecords(page, pageSize),
-    placeholderData: (previousData) => previousData,
   });
 }

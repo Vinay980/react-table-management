@@ -2,9 +2,11 @@ import DataTable from "../components/Table/DataTable";
 import Pagination from "../components/Pagination/Pagination";
 import { usePagination } from "../hooks/usePagination";
 import { useRecords } from "../hooks/useRecords";
+import { useSorting } from "../hooks/useSorting";
 
 export default function Home() {
   const { page, pageSize, setPage, setPageSize } = usePagination();
+  const { sortBy, order, toggleSort } = useSorting();
 
   // console.log("Home Rendered");
 
@@ -26,7 +28,12 @@ export default function Home() {
     <div className="mx-auto max-w-7xl p-8">
       <h1 className="mb-6 text-3xl font-bold">Spotify Songs</h1>
 
-      <DataTable data={data?.records ?? []} />
+      <DataTable
+        data={data?.records ?? []}
+        sortBy={sortBy}
+        order={order}
+        onSort={toggleSort}
+      />
 
       <Pagination
         page={page}

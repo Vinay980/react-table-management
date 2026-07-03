@@ -1,7 +1,8 @@
 import DataTable from "../components/Table/DataTable";
 import Pagination from "../components/Pagination/Pagination";
 import SearchBar from "../components/Search/SearchBar";
-
+import GenreFilter from "../components/Filters/GenreFilter";
+import { useFilters } from "../hooks/useFilters";
 import { usePagination } from "../hooks/usePagination";
 import { useSorting } from "../hooks/useSorting";
 import { useSearch } from "../hooks/useSearch";
@@ -11,16 +12,14 @@ export default function Home() {
   // Pagination
   const { page, pageSize, setPage, setPageSize } = usePagination();
 
+  // Filters
+  const { genre, setGenre } = useFilters();
+
   // Sorting
   const { sortBy, order, toggleSort } = useSorting();
 
   // Search
-  const {
-    search,
-    setSearch,
-    field,
-    setField,
-  } = useSearch();
+  const { search, setSearch, field, setField } = useSearch();
 
   // Fetch Records
   const { data, isLoading, error } = useRecords(
@@ -29,7 +28,8 @@ export default function Home() {
     sortBy,
     order,
     search,
-    field
+    field,
+    genre,
   );
 
   if (isLoading) {
@@ -43,18 +43,14 @@ export default function Home() {
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <h1 className="text-xl text-red-500">
-          Something went wrong.
-        </h1>
+        <h1 className="text-xl text-red-500">Something went wrong.</h1>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-7xl p-8">
-      <h1 className="mb-6 text-3xl font-bold">
-        Spotify Songs
-      </h1>
+      <h1 className="mb-6 text-3xl font-bold">Spotify Songs</h1>
 
       <SearchBar
         value={search}
@@ -62,6 +58,8 @@ export default function Home() {
         onChange={setSearch}
         onFieldChange={setField}
       />
+
+      <GenreFilter value={genre} onChange={setGenre} />
 
       <DataTable
         data={data?.records ?? []}

@@ -14,6 +14,7 @@ export async function getRecords(
   order: "asc" | "desc",
   search: string,
   field: string,
+  genre: string,
 ): Promise<RecordsResponse> {
   const response = await api.get<RecordItem[]>(ENDPOINTS.RECORDS, {
     params: {
@@ -25,6 +26,12 @@ export async function getRecords(
       ...(search
         ? {
             [`${field}_like`]: search,
+          }
+        : {}),
+
+      ...(genre
+        ? {
+            playlist_genre: genre,
           }
         : {}),
     },

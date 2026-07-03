@@ -19,7 +19,7 @@ export default function Home() {
   const { sortBy, order, toggleSort } = useSorting();
 
   // Search
-  const { search, setSearch, field, setField } = useSearch();
+  const { search, setSearch } = useSearch();
 
   // Fetch Records
   const { data, isLoading, error } = useRecords(
@@ -28,7 +28,6 @@ export default function Home() {
     sortBy,
     order,
     search,
-    field,
     genre,
   );
 
@@ -54,9 +53,7 @@ export default function Home() {
 
       <SearchBar
         value={search}
-        field={field}
         onChange={setSearch}
-        onFieldChange={setField}
       />
 
       <GenreFilter value={genre} onChange={setGenre} />

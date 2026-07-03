@@ -7,7 +7,6 @@ export function useRecords(
   sortBy: string,
   order: "asc" | "desc",
   search: string,
-  field: string,
   genre: string
 ) {
   return useQuery({
@@ -18,7 +17,6 @@ export function useRecords(
       sortBy,
       order,
       search,
-      field,
       genre,
     ],
 
@@ -29,10 +27,9 @@ export function useRecords(
         sortBy,
         order,
         search,
-        field,
         genre
       ),
 
-    placeholderData: (previousData) => previousData,
+    placeholderData: (prev) => prev,
   });
 }

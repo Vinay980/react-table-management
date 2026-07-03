@@ -8,33 +8,32 @@ export interface RecordsResponse {
 }
 
 export async function getRecords(
-  page: number,
+   page: number,
   limit: number,
   sortBy: string,
   order: "asc" | "desc",
   search: string,
-  field: string,
-  genre: string,
+  genre: string
 ): Promise<RecordsResponse> {
   const response = await api.get<RecordItem[]>(ENDPOINTS.RECORDS, {
     params: {
-      _page: page,
-      _limit: limit,
-      _sort: sortBy,
-      _order: order,
+  _page: page,
+  _limit: limit,
+  _sort: sortBy,
+  _order: order,
 
-      ...(search
-        ? {
-            [`${field}_like`]: search,
-          }
-        : {}),
+  ...(search
+    ? {
+        q: search,
+      }
+    : {}),
 
-      ...(genre
-        ? {
-            playlist_genre: genre,
-          }
-        : {}),
-    },
+  ...(genre
+    ? {
+        playlist_genre: genre,
+      }
+    : {}),
+},
   });
 
   return {

@@ -14,6 +14,13 @@ interface Props {
 }
 
 export default function DataTable({ data, sortBy, order, onSort }: Props) {
+  //  console.log({
+  //   data,
+  //   sortBy,
+  //   order,
+  //   onSort,
+  //   type: typeof onSort,
+  // });
   const table = useReactTable({
     data,
     columns,
@@ -29,7 +36,10 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  onClick={() => onSort(header.column.id)}
+                  onClick={() => {
+                    console.log("Column ID:", header.column.id);
+                    onSort(header.column.id);
+                  }}
                   className="cursor-pointer border border-gray-300 px-4 py-3 text-left font-semibold hover:bg-gray-200"
                 >
                   <div className="flex items-center gap-2">

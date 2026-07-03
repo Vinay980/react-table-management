@@ -8,9 +8,7 @@ export default function Home() {
   const { page, pageSize, setPage, setPageSize } = usePagination();
   const { sortBy, order, toggleSort } = useSorting();
 
-  // console.log("Home Rendered");
-
-  const { data, isLoading, error } = useRecords(page, pageSize);
+  const { data, isLoading, error } = useRecords(page, pageSize, sortBy, order);
 
   // console.log("Loading:", isLoading);
   // console.log("Error:", error);

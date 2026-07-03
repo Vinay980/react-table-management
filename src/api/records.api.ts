@@ -9,12 +9,16 @@ export interface RecordsResponse {
 
 export async function getRecords(
   page: number,
-  limit: number
+  limit: number,
+  sortBy: string,
+  order: "asc" | "desc"
 ): Promise<RecordsResponse> {
   const response = await api.get<RecordItem[]>(ENDPOINTS.RECORDS, {
     params: {
       _page: page,
       _limit: limit,
+      _sort: sortBy,
+      _order: order,
     },
   });
 

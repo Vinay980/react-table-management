@@ -7,7 +7,9 @@ export function useRecords(
   sortBy: string,
   order: "asc" | "desc",
   search: string,
-  genre: string
+  genre: string,
+  minPopularity: string,
+  maxPopularity: string,
 ) {
   return useQuery({
     queryKey: [
@@ -18,6 +20,8 @@ export function useRecords(
       order,
       search,
       genre,
+      minPopularity,
+      maxPopularity,
     ],
 
     queryFn: () =>
@@ -27,9 +31,11 @@ export function useRecords(
         sortBy,
         order,
         search,
-        genre
+        genre,
+        minPopularity,
+        maxPopularity,
       ),
 
-    placeholderData: (prev) => prev,
+    placeholderData: (previousData) => previousData,
   });
 }

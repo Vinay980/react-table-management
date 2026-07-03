@@ -8,32 +8,37 @@ export interface RecordsResponse {
 }
 
 export async function getRecords(
-   page: number,
+  page: number,
   limit: number,
   sortBy: string,
   order: "asc" | "desc",
   search: string,
-  genre: string
+  genre: string,
+  minPopularity: string,
+  maxPopularity: string,
 ): Promise<RecordsResponse> {
   const response = await api.get<RecordItem[]>(ENDPOINTS.RECORDS, {
     params: {
-  _page: page,
-  _limit: limit,
-  _sort: sortBy,
-  _order: order,
+      _page: page,
+      _limit: limit,
+      _sort: sortBy,
+      _order: order,
 
-  ...(search
-    ? {
-        q: search,
-      }
-    : {}),
+      ...(search
+        ? {
+            q: search,
+          }
+        : {}),
 
-  ...(genre
-    ? {
-        playlist_genre: genre,
-      }
-    : {}),
-},
+      ...(genre
+        ? {
+            playlist_genre: genre,
+          }
+        : {}),
+      ...(minPopularity ? { track_popularity_gte: minPopularity } : {}),
+
+      ...(maxPopularity ? { track_popularity_lte: maxPopularity } : {}),
+    },
   });
 
   return {

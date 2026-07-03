@@ -5,11 +5,31 @@ export function useRecords(
   page: number,
   pageSize: number,
   sortBy: string,
-  order: "asc" | "desc"
+  order: "asc" | "desc",
+  search: string,
+  field: string
 ) {
   return useQuery({
-    queryKey: ["records", page, pageSize, sortBy, order],
-    queryFn: () => getRecords(page, pageSize, sortBy, order),
+    queryKey: [
+      "records",
+      page,
+      pageSize,
+      sortBy,
+      order,
+      search,
+      field,
+    ],
+
+    queryFn: () =>
+      getRecords(
+        page,
+        pageSize,
+        sortBy,
+        order,
+        search,
+        field
+      ),
+
     placeholderData: (previousData) => previousData,
   });
 }

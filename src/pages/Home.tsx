@@ -36,11 +36,11 @@ export default function Home() {
     maxPopularity,
   );
 
-  console.log({
-  isLoading,
-  isFetching,
-  data,
-});
+//   console.log({
+//   isLoading,
+//   isFetching,
+//   data,
+// });
 
   if (isLoading) {
     return <h1 className="p-10">Loading...</h1>;

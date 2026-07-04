@@ -7,7 +7,7 @@ import VirtualRow from "./VirtualRow";
 
 interface Props {
   table: Table<RecordItem>;
-  tableContainerRef: RefObject<HTMLDivElement>;
+  tableContainerRef: RefObject<HTMLDivElement | null>;
 
   editingId: number | null;
   editData: Partial<RecordItem>;
@@ -30,7 +30,8 @@ export default function TableBody({
 }: Props) {
   const rows = table.getRowModel().rows;
 
-  const rowVirtualizer = useVirtualizer({
+  const rowVirtualizer =
+  useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
     count: rows.length,
     getScrollElement: () => tableContainerRef.current,
     estimateSize: () => 56,
@@ -39,7 +40,7 @@ export default function TableBody({
 
   useEffect(() => {
     rowVirtualizer.measure();
-  }, [rows.length]);
+  }, [rows.length, rowVirtualizer]);
 
   return (
     <tbody

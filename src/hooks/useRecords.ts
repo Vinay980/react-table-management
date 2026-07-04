@@ -8,8 +8,8 @@ export function useRecords(
   order: "asc" | "desc",
   search: string,
   genre: string,
-  minPopularity: string,
-  maxPopularity: string,
+  minPopularity: number,
+  maxPopularity: number,
 ) {
   return useQuery({
     queryKey: [

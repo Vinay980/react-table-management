@@ -1,8 +1,5 @@
 import { flexRender, type Row } from "@tanstack/react-table";
-import type {
-  VirtualItem,
-  Virtualizer,
-} from "@tanstack/react-virtual";
+import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
 
 import type { RecordItem } from "../../types/record";
 
@@ -36,7 +33,11 @@ export default function VirtualRow({
   return (
     <tr
       data-index={virtualRow.index}
-      ref={rowVirtualizer.measureElement}
+      ref={(node) => {
+        if (node) {
+          rowVirtualizer.measureElement(node);
+        }
+      }}
       style={{
         display: "flex",
         position: "absolute",
@@ -61,10 +62,7 @@ export default function VirtualRow({
         const columnId = cell.column.id;
 
         // Editable Artist
-        if (
-          columnId === "track_artist" &&
-          editingId === record.id
-        ) {
+        if (columnId === "track_artist" && editingId === record.id) {
           return (
             <td
               key={cell.id}
@@ -86,10 +84,7 @@ export default function VirtualRow({
         }
 
         // Editable Popularity
-        if (
-          columnId === "track_popularity" &&
-          editingId === record.id
-        ) {
+        if (columnId === "track_popularity" && editingId === record.id) {
           return (
             <td
               key={cell.id}
@@ -102,7 +97,7 @@ export default function VirtualRow({
                 onChange={(e) =>
                   setEditData((prev) => ({
                     ...prev,
-                    track_popularity: Number(e.target.value),
+                    track_popularity: String(e.target.value),
                   }))
                 }
                 className="w-full rounded border px-2 py-1"
@@ -117,19 +112,13 @@ export default function VirtualRow({
             style={{ width: cell.column.getSize() }}
             className="border border-gray-300 px-4 py-3"
           >
-            {flexRender(
-              cell.column.columnDef.cell,
-              cell.getContext()
-            )}
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </td>
         );
       })}
 
       {/* Actions */}
-      <td
-        style={{ width: 140 }}
-        className="border border-gray-300 px-4 py-3"
-      >
+      <td style={{ width: 140 }} className="border border-gray-300 px-4 py-3">
         {editingId === record.id ? (
           <>
             <button

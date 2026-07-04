@@ -14,8 +14,8 @@ export async function getRecords(
   order: "asc" | "desc",
   search: string,
   genre: string,
-  minPopularity: string,
-  maxPopularity: string,
+  minPopularity: number,
+  maxPopularity: number,
 ): Promise<RecordsResponse> {
   const response = await api.get<RecordItem[]>(ENDPOINTS.RECORDS, {
     params: {
@@ -49,8 +49,8 @@ export async function exportCurrentView(
   order: "asc" | "desc",
   search: string,
   genre: string,
-  minPopularity: string,
-  maxPopularity: string,
+  minPopularity: number,
+  maxPopularity: number,
 ): Promise<RecordItem[]> {
   const response = await api.get<RecordItem[]>(ENDPOINTS.RECORDS, {
     params: {

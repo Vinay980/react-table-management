@@ -88,7 +88,7 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
 
     enableRowSelection: true,
 
-    // ✅ Enable column resizing
+    
     columnResizeMode: "onChange",
 
     onRowSelectionChange: setRowSelection,

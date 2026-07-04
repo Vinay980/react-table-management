@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -29,26 +29,24 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
 
   const updateMutation = useUpdateRecord();
 
-  const [columnVisibility, setColumnVisibility] =
-  useState<VisibilityState>(() => {
-    const saved = localStorage.getItem("columnVisibility");
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    () => {
+      const saved = localStorage.getItem("columnVisibility");
 
-    if (saved) {
-      return JSON.parse(saved);
-    }
+      if (saved) {
+        return JSON.parse(saved);
+      }
 
-    return {};
-  });
-  useEffect(() => {
-  localStorage.setItem(
-    "columnVisibility",
-    JSON.stringify(columnVisibility)
+      return {};
+    },
   );
-}, [columnVisibility]);
+  useEffect(() => {
+    localStorage.setItem("columnVisibility", JSON.stringify(columnVisibility));
+  }, [columnVisibility]);
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!editData.track_artist?.trim()) {
       alert("Artist name is required.");
       return;
@@ -77,27 +75,27 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
       console.error(error);
       alert("Failed to update record.");
     }
-  };
+  }, [editingId, editData, updateMutation, cancelEditing]);
 
   const table = useReactTable({
-  data,
-  columns,
+    data,
+    columns,
 
-  state: {
-    rowSelection,
-    columnVisibility,
-  },
+    state: {
+      rowSelection,
+      columnVisibility,
+    },
 
-  enableRowSelection: true,
+    enableRowSelection: true,
 
-  // ✅ Enable column resizing
-  columnResizeMode: "onChange",
+    // ✅ Enable column resizing
+    columnResizeMode: "onChange",
 
-  onRowSelectionChange: setRowSelection,
-  onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
 
-  getCoreRowModel: getCoreRowModel(),
-});
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   const selectedRecords = table
     .getSelectedRowModel()
@@ -105,7 +103,7 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
 
   return (
     <>
-    <ColumnVisibility table={table} />
+      <ColumnVisibility table={table} />
       <div className="mb-4 flex items-center justify-between">
         <span className="text-sm text-gray-600">
           Selected: {selectedRecords.length}
@@ -130,74 +128,74 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
           }}
         >
           <thead
-  className="sticky top-0 z-10 bg-gray-100"
-  style={{ display: "grid" }}
->
-  {table.getHeaderGroups().map((headerGroup) => (
-    <tr
-      key={headerGroup.id}
-      style={{
-        display: "flex",
-        width: "100%",
-      }}
-    >
-      {/* Select All */}
-      <th
-        className="border border-gray-300 px-4 py-3"
-        style={{ width: 50 }}
-      >
-        <input
-          type="checkbox"
-          checked={table.getIsAllRowsSelected()}
-          ref={(el) => {
-            if (el) {
-              el.indeterminate = table.getIsSomeRowsSelected();
-            }
-          }}
-          onChange={table.getToggleAllRowsSelectedHandler()}
-        />
-      </th>
-
-      {headerGroup.headers.map((header) => (
-        <th
-          key={header.id}
-          style={{
-            width: header.getSize(),
-            position: "relative",
-          }}
-          className="border border-gray-300 px-4 py-3 text-left font-semibold"
-        >
-          <div
-            onClick={() => onSort(header.column.id)}
-            className="cursor-pointer"
+            className="sticky top-0 z-10 bg-gray-100"
+            style={{ display: "grid" }}
           >
-            {flexRender(
-              header.column.columnDef.header,
-              header.getContext()
-            )}
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr
+                key={headerGroup.id}
+                style={{
+                  display: "flex",
+                  width: "100%",
+                }}
+              >
+                {/* Select All */}
+                <th
+                  className="border border-gray-300 px-4 py-3"
+                  style={{ width: 50 }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={table.getIsAllRowsSelected()}
+                    ref={(el) => {
+                      if (el) {
+                        el.indeterminate = table.getIsSomeRowsSelected();
+                      }
+                    }}
+                    onChange={table.getToggleAllRowsSelectedHandler()}
+                  />
+                </th>
 
-            {sortBy === header.column.id &&
-              (order === "asc" ? " ▲" : " ▼")}
-          </div>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    style={{
+                      width: header.getSize(),
+                      position: "relative",
+                    }}
+                    className="border border-gray-300 px-4 py-3 text-left font-semibold"
+                  >
+                    <div
+                      onClick={() => onSort(header.column.id)}
+                      className="cursor-pointer"
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
 
-          {/* Resize Handle */}
-          <div
-            onMouseDown={header.getResizeHandler()}
-            onTouchStart={header.getResizeHandler()}
-            className="absolute right-0 top-0 h-full w-1 cursor-col-resize bg-transparent hover:bg-blue-500"
-          />
-        </th>
-      ))}
+                      {sortBy === header.column.id &&
+                        (order === "asc" ? " ▲" : " ▼")}
+                    </div>
 
-      <th
-        className="border border-gray-300 px-4 py-3"
-        style={{ width: 140 }}
-      >
-        Actions
-      </th>
-    </tr>
-  ))}
-</thead>
+                    {/* Resize Handle */}
+                    <div
+                      onMouseDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                      className="absolute right-0 top-0 h-full w-1 cursor-col-resize bg-transparent hover:bg-blue-500"
+                    />
+                  </th>
+                ))}
+
+                <th
+                  className="border border-gray-300 px-4 py-3"
+                  style={{ width: 140 }}
+                >
+                  Actions
+                </th>
+              </tr>
+            ))}
+          </thead>
 
           <TableBody
             table={table}

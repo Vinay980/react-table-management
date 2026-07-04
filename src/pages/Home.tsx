@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import DataTable from "../components/Table/DataTable";
 import Pagination from "../components/Pagination/Pagination";
 import SearchBar from "../components/Search/SearchBar";
@@ -12,7 +14,6 @@ import { useRecords } from "../hooks/useRecords";
 import { useDebounce } from "../hooks/useDebounce";
 
 import { exportCurrentView } from "../api/records.api";
-
 import { exportCurrentViewToCSV } from "../utils/exportCurrentView";
 
 export default function Home() {
@@ -45,11 +46,12 @@ export default function Home() {
 
   const totalRecords = data?.total ?? 0;
 
-  const startRecord = totalRecords === 0 ? 0 : (page - 1) * pageSize + 1;
+  const startRecord =
+    totalRecords === 0 ? 0 : (page - 1) * pageSize + 1;
 
   const endRecord = Math.min(page * pageSize, totalRecords);
 
-  const handleExportCurrentView = async () => {
+  const handleExportCurrentView = useCallback(async () => {
     try {
       const records = await exportCurrentView(
         sortBy,
@@ -65,7 +67,14 @@ export default function Home() {
       console.error(error);
       alert("Failed to export current view.");
     }
-  };
+  }, [
+    sortBy,
+    order,
+    debouncedSearch,
+    genre,
+    minPopularity,
+    maxPopularity,
+  ]);
 
   // Loading
   if (isLoading) {
@@ -106,14 +115,22 @@ export default function Home() {
 
   return (
     <div className="mx-auto max-w-7xl p-8">
-      <h1 className="mb-6 text-3xl font-bold">Spotify Songs</h1>
+      <h1 className="mb-6 text-3xl font-bold">
+        Spotify Songs
+      </h1>
 
       <div className="mb-6 flex flex-wrap items-end gap-4">
         <div className="min-w-[250px] flex-1">
-          <SearchBar value={search} onChange={setSearch} />
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+          />
         </div>
 
-        <GenreFilter value={genre} onChange={setGenre} />
+        <GenreFilter
+          value={genre}
+          onChange={setGenre}
+        />
 
         <PopularityFilter
           min={minPopularity}
@@ -138,18 +155,26 @@ export default function Home() {
         </p>
       )}
 
-      {isFetching && <p className="mb-4 text-sm text-blue-600">Updating...</p>}
+      {isFetching && (
+        <p className="mb-4 text-sm text-blue-600">
+          Updating...
+        </p>
+      )}
 
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm text-gray-600">
-          Showing <strong>{startRecord}</strong>–<strong>{endRecord}</strong> of{" "}
-          <strong>{totalRecords.toLocaleString()}</strong> records
+          Showing <strong>{startRecord}</strong>–
+          <strong>{endRecord}</strong> of{" "}
+          <strong>{totalRecords.toLocaleString()}</strong>{" "}
+          records
         </p>
       </div>
 
       {data?.records.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 py-20 text-center">
-          <h2 className="text-2xl font-semibold">No records found</h2>
+          <h2 className="text-2xl font-semibold">
+            No records found
+          </h2>
 
           <p className="mt-2 text-gray-500">
             Try changing your search or filters.

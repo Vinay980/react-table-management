@@ -18,12 +18,12 @@ export default function Pagination({
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <div className="mt-6 flex items-center justify-between">
-      <div>
+    <div className="mt-4 flex flex-col gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+      <div className="flex flex-wrap items-center gap-2">
         <button
           disabled={page === 1}
           onClick={() => onPageChange(page - 1)}
-          className="mr-2 rounded border px-4 py-2 disabled:opacity-50"
+          className="rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Previous
         </button>
@@ -31,21 +31,21 @@ export default function Pagination({
         <button
           disabled={page === totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="rounded border px-4 py-2 disabled:opacity-50"
+          className="rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Next
         </button>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span>
+      <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
+        <span className="rounded-full border border-slate-200 bg-white px-3 py-2">
           Page {page} of {totalPages}
         </span>
 
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          className="rounded border p-2"
+          className="cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none"
         >
           {PAGE_SIZES.map((size) => (
             <option key={size} value={size}>

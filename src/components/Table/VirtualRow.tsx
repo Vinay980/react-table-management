@@ -49,7 +49,7 @@ export default function VirtualRow({
       {/* Checkbox */}
       <td
         style={{ width: 50 }}
-        className="border border-gray-300 flex items-center justify-center"
+        className="flex items-center justify-center border-b border-r border-slate-200 bg-white"
       >
         <input
           type="checkbox"
@@ -67,7 +67,7 @@ export default function VirtualRow({
             <td
               key={cell.id}
               style={{ width: cell.column.getSize() }}
-              className="border border-gray-300 px-4 py-3"
+              className="border-b border-r border-slate-200 bg-white px-4 py-3"
             >
               <input
                 value={editData.track_artist ?? ""}
@@ -89,7 +89,7 @@ export default function VirtualRow({
             <td
               key={cell.id}
               style={{ width: cell.column.getSize() }}
-              className="border border-gray-300 px-4 py-3"
+              className="border-b border-r border-slate-200 bg-white px-4 py-3"
             >
               <input
                 type="number"
@@ -110,7 +110,7 @@ export default function VirtualRow({
           <td
             key={cell.id}
             style={{ width: cell.column.getSize() }}
-            className="border border-gray-300 px-4 py-3"
+            className="border-b border-r border-slate-200 bg-white px-4 py-3"
           >
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </td>
@@ -118,19 +118,19 @@ export default function VirtualRow({
       })}
 
       {/* Actions */}
-      <td style={{ width: 140 }} className="border border-gray-300 px-4 py-3">
+      <td style={{ width: 140 }} className="border-b border-slate-200 bg-white px-4 py-3">
         {editingId === record.id ? (
           <>
             <button
               onClick={handleSave}
-              className="mr-2 rounded bg-green-600 px-3 py-1 text-white"
+              className="mr-2 cursor-pointer rounded-full bg-slate-900 px-3 py-1.5 text-sm text-white"
             >
               Save
             </button>
 
             <button
               onClick={cancelEditing}
-              className="rounded bg-gray-500 px-3 py-1 text-white"
+              className="cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700"
             >
               Cancel
             </button>
@@ -138,7 +138,7 @@ export default function VirtualRow({
         ) : (
           <button
             onClick={() => startEditing(record)}
-            className="rounded bg-blue-600 px-3 py-1 text-white"
+            className="cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700"
           >
             Edit
           </button>

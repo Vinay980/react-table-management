@@ -102,33 +102,35 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
     .rows.map((row) => row.original);
 
   return (
-    <>
-      <ColumnVisibility table={table} />
-      <div className="mb-4 flex items-center justify-between">
-        <span className="text-sm text-gray-600">
-          Selected: {selectedRecords.length}
+    <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-200 bg-slate-50 px-3 py-3 sm:px-4">
+        <ColumnVisibility table={table} />
+      </div>
+      <div className="flex flex-col gap-3 border-b border-slate-200 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+        <span className="text-sm text-slate-600">
+          Selected: <span className="font-semibold text-slate-800">{selectedRecords.length}</span>
         </span>
 
         <button
           onClick={() => exportSelectedToCSV(selectedRecords)}
           disabled={selectedRecords.length === 0}
-          className="rounded bg-green-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-gray-400"
+          className="cursor-pointer rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Export Selected
         </button>
       </div>
       <div
         ref={tableContainerRef}
-        className="h-[600px] overflow-auto rounded-lg border border-gray-300 bg-white shadow"
+        className="h-150 overflow-auto"
       >
         <table
-          className="min-w-full"
+          className="min-w-full border-collapse"
           style={{
             display: "grid",
           }}
         >
           <thead
-            className="sticky top-0 z-10 bg-gray-100"
+            className="sticky top-0 z-10 bg-slate-100"
             style={{ display: "grid" }}
           >
             {table.getHeaderGroups().map((headerGroup) => (
@@ -141,7 +143,7 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
               >
                 {/* Select All */}
                 <th
-                  className="border border-gray-300 px-4 py-3"
+                  className="border-b border-r border-slate-200 px-4 py-3"
                   style={{ width: 50 }}
                 >
                   <input
@@ -163,7 +165,7 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
                       width: header.getSize(),
                       position: "relative",
                     }}
-                    className="border border-gray-300 px-4 py-3 text-left font-semibold"
+                    className="border-b border-r border-slate-200 px-4 py-3 text-left text-sm font-semibold text-slate-700"
                   >
                     <div
                       onClick={() => onSort(header.column.id)}
@@ -188,7 +190,7 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
                 ))}
 
                 <th
-                  className="border border-gray-300 px-4 py-3"
+                  className="border-b border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
                   style={{ width: 140 }}
                 >
                   Actions
@@ -209,6 +211,6 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
           />
         </table>
       </div>
-    </>
+    </div>
   );
 }

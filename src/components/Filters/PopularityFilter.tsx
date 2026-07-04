@@ -30,26 +30,32 @@ export default function PopularityFilter({
   };
 
   return (
-    <div className="flex gap-2">
-      <input
-        type="number"
-        min="0"
-        max="100"
-        placeholder="Min"
-        value={min}
-        onChange={onMinInputChange}
-        className="w-24 rounded border border-gray-300 px-3 py-2"
-      />
+    <div className="flex flex-col gap-1 text-sm font-medium text-slate-700 sm:flex-row sm:items-end">
+      <label className="flex flex-col gap-1">
+        <span className="text-xs uppercase tracking-[0.18em] text-slate-500">Min</span>
+        <input
+          type="number"
+          min="0"
+          max="100"
+          placeholder="Min"
+          value={min}
+          onChange={onMinInputChange}
+          className="w-24 cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+        />
+      </label>
 
-      <input
-        type="number"
-        min={0}
-        max={100}
-        placeholder="Max"
-        value={max}
-        onChange={onMaxInputChange}
-        className="w-24 rounded border border-gray-300 px-3 py-2"
-      />
+      <label className="flex flex-col gap-1">
+        <span className="text-xs uppercase tracking-[0.18em] text-slate-500">Max</span>
+        <input
+          type="number"
+          min={0}
+          max={100}
+          placeholder="Max"
+          value={max}
+          onChange={onMaxInputChange}
+          className="w-24 cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+        />
+      </label>
     </div>
   );
 }

@@ -1,235 +1,194 @@
 # React Table Management App
 
-A high-performance React table management application built with **React, TypeScript, TanStack Table, TanStack Virtual, React Query, Tailwind CSS, and json-server**.
+A high-performance React Table Management application built with **React + TypeScript**, capable of handling large datasets efficiently using server-side pagination, sorting, filtering, virtualization, and inline editing.
 
-The application efficiently handles large datasets with server-side pagination, sorting, filtering, virtualization, inline editing, bulk actions, and CSV export.
+## Features
 
----
-
-# Features
-
-## Table & Performance
-
-- Virtualized table using TanStack Virtual
-- Server-side pagination
-- Server-side sorting
-- Responsive table layout
-- Optimized rendering with React hooks
-
----
-
-## Search & Filtering
-
-- Global search
-- Debounced search (300ms)
-- Search indicator
-- Clear search button
-- Genre filter
-- Popularity range filter
-- Combined filters with server-side API
-
----
-
-## Inline Editing
-
-- Edit Track Artist
-- Edit Track Popularity
-- Validation
-- Save / Cancel
-- Optimistic UI updates
-- Automatic rollback on API failure
-
----
-
-## Bulk Actions
-
-- Row selection
-- Select All (Current Page)
+- Server-side Pagination
+- Server-side Sorting
+- Global Search (Debounced)
+- Genre Filter
+- Popularity Range Filter
+- Virtualized Table (TanStack Virtual)
+- Inline Editing
+- Optimistic Updates (React Query)
+- Row Selection
+- Select All
 - Export Selected Rows to CSV
-
----
-
-## Column Management
-
-- Show / Hide columns
-- Persist column visibility using Local Storage
-- Column resizing
-
----
-
-## CSV Export
-
-Export Current View with:
-
-- Search
-- Filters
-- Sorting
-
-Proper CSV escaping is implemented.
-
----
-
-## UX
-
-- Loading state
-- Error state
-- Retry button
-- Empty state
+- Export Current View to CSV
+- Column Visibility Toggle
+- Column Resize
+- Persist Column Preferences using localStorage
+- Loading, Error and Empty States
 - Responsive UI
+- Component-based Architecture
+- Custom Hooks
+- Unit Tests (Vitest + Testing Library)
 
 ---
 
-# Tech Stack
+## Tech Stack
 
 - React 19
 - TypeScript
 - Vite
 - TanStack Table
 - TanStack Virtual
-- TanStack Query
-- Tailwind CSS
+- TanStack React Query
 - Axios
+- Tailwind CSS
 - json-server
+- PapaParse
+- Vitest
+- React Testing Library
 
 ---
 
-# Folder Structure
+## Project Structure
 
 ```
-src
-│
-├── api
-├── components
-│ ├── Filters
-│ ├── Pagination
-│ ├── Search
-│ └── Table
-│
-├── hooks
-├── providers
-├── types
-├── utils
-└── pages
+src/
+ ├── api/
+ ├── components/
+ ├── hooks/
+ ├── pages/
+ ├── providers/
+ ├── types/
+ ├── utils/
 ```
 
 ---
 
-# Installation
+## Getting Started
 
-Clone the repository
+### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone <your-repository-url>
+cd react-table-management
 ```
 
-Install dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
----
+### 3. Create environment file
 
-# Environment Variables
-
-Create a `.env` file
-
-```env
-VITE_API_BASE_URL=http://localhost:3000
-```
-
----
-
-# Running json-server
-
-Start json-server
+Copy the example environment file.
 
 ```bash
-npx json-server --watch db.json --port 3000
+cp .env.example .env
+```
+
+or manually create:
+
+```
+VITE_API_BASE_URL=http://localhost:3001
 ```
 
 ---
 
-# Run Development Server
+### 4. Start json-server
+
+```bash
+npm run server
+```
+
+Runs on
+
+```
+http://localhost:3001
+```
+
+---
+
+### 5. Start React App
 
 ```bash
 npm run dev
 ```
 
+Runs on
+
+```
+http://localhost:5173
+```
+
 ---
 
-# Build
+## Available Scripts
 
 ```bash
+npm run dev
+npm run server
 npm run build
-```
-
----
-
-# Lint
-
-```bash
 npm run lint
+npm test
 ```
 
 ---
 
-# Dataset
+## Dataset
 
 Spotify Songs Dataset (~30,000 records)
 
-The dataset is served using **json-server** to simulate a REST API.
+Served through json-server using server-side query parameters for:
+
+- Pagination
+- Sorting
+- Filtering
+- Search
 
 ---
 
-# Technical Decisions
+## Performance Optimizations
 
-- TanStack Table for headless table implementation
-- TanStack Virtual for virtualization
-- React Query for server state management
-- Axios for API communication
-- Tailwind CSS for styling
-- Custom hooks to separate UI and business logic
-- Server-side operations for pagination, sorting, filtering and searching
-- Optimistic updates for inline editing
-
----
-
-# Performance Optimizations
-
-- Virtual scrolling
-- Debounced search
-- Stable column definitions
-- useCallback where appropriate
-- React Query caching
-- Optimistic updates
+- TanStack Virtual
+- Debounced Search
+- useMemo
+- useCallback
+- Optimistic Updates
+- Server-side Pagination
+- React Query Cache
 
 ---
 
-# Known Limitations
+## Testing
 
-- Select All works on the current page only.
-- Genre filtering is implemented as a single-select dropdown.
+Implemented tests for:
 
----
+- SearchBar
+- Pagination
+- Genre Filter
+- Popularity Filter
+- DataTable
 
-# Future Improvements
+Run tests:
 
-- Multi-select category filters
-- Drag-and-drop column reordering
-- Advanced filter presets
-- Dark mode
-- Accessibility improvements
-- Additional unit tests
-
----
-
-# Time Spent
-
-Approximately **15–18 hours**
+```bash
+npm test
+```
 
 ---
 
-# Author
+## Future Improvements
 
-**Vinay Kumar Mahto**
+- Multi-column Sorting
+- Drag & Drop Column Reordering
+- Saved Filter Presets
+- Dark Mode
+- Accessibility Improvements
+
+---
+
+## Time Spent
+
+Approximately **15–18 hours**.
+
+---
+
+## Author
+
+Vinay Kumar Mahto

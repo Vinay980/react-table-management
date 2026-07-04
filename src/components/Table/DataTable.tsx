@@ -80,22 +80,24 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
   };
 
   const table = useReactTable({
-    data,
-    columns,
+  data,
+  columns,
 
-    state: {
-      rowSelection,
-      columnVisibility,
-    },
+  state: {
+    rowSelection,
+    columnVisibility,
+  },
 
-    enableRowSelection: true,
+  enableRowSelection: true,
 
-    onRowSelectionChange: setRowSelection,
+  // ✅ Enable column resizing
+  columnResizeMode: "onChange",
 
-    onColumnVisibilityChange: setColumnVisibility,
+  onRowSelectionChange: setRowSelection,
+  onColumnVisibilityChange: setColumnVisibility,
 
-    getCoreRowModel: getCoreRowModel(),
-  });
+  getCoreRowModel: getCoreRowModel(),
+});
 
   const selectedRecords = table
     .getSelectedRowModel()
@@ -128,57 +130,74 @@ export default function DataTable({ data, sortBy, order, onSort }: Props) {
           }}
         >
           <thead
-            className="sticky top-0 z-10 bg-gray-100"
-            style={{
-              display: "grid",
-            }}
+  className="sticky top-0 z-10 bg-gray-100"
+  style={{ display: "grid" }}
+>
+  {table.getHeaderGroups().map((headerGroup) => (
+    <tr
+      key={headerGroup.id}
+      style={{
+        display: "flex",
+        width: "100%",
+      }}
+    >
+      {/* Select All */}
+      <th
+        className="border border-gray-300 px-4 py-3"
+        style={{ width: 50 }}
+      >
+        <input
+          type="checkbox"
+          checked={table.getIsAllRowsSelected()}
+          ref={(el) => {
+            if (el) {
+              el.indeterminate = table.getIsSomeRowsSelected();
+            }
+          }}
+          onChange={table.getToggleAllRowsSelectedHandler()}
+        />
+      </th>
+
+      {headerGroup.headers.map((header) => (
+        <th
+          key={header.id}
+          style={{
+            width: header.getSize(),
+            position: "relative",
+          }}
+          className="border border-gray-300 px-4 py-3 text-left font-semibold"
+        >
+          <div
+            onClick={() => onSort(header.column.id)}
+            className="cursor-pointer"
           >
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr
-                key={headerGroup.id}
-                style={{
-                  display: "flex",
-                  width: "100%",
-                }}
-              >
-                {/* Select All */}
-                <th className="w-14 border border-gray-300 px-4 py-3">
-                  <input
-                    type="checkbox"
-                    checked={table.getIsAllRowsSelected()}
-                    ref={(el) => {
-                      if (el) {
-                        el.indeterminate = table.getIsSomeRowsSelected();
-                      }
-                    }}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
-                  />
-                </th>
+            {flexRender(
+              header.column.columnDef.header,
+              header.getContext()
+            )}
 
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    onClick={() => onSort(header.column.id)}
-                    className="flex-1 cursor-pointer border border-gray-300 px-4 py-3 text-left font-semibold hover:bg-gray-200"
-                  >
-                    <div className="flex items-center gap-2">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+            {sortBy === header.column.id &&
+              (order === "asc" ? " ▲" : " ▼")}
+          </div>
 
-                      {sortBy === header.column.id &&
-                        (order === "asc" ? "▲" : "▼")}
-                    </div>
-                  </th>
-                ))}
+          {/* Resize Handle */}
+          <div
+            onMouseDown={header.getResizeHandler()}
+            onTouchStart={header.getResizeHandler()}
+            className="absolute right-0 top-0 h-full w-1 cursor-col-resize bg-transparent hover:bg-blue-500"
+          />
+        </th>
+      ))}
 
-                <th className="w-36 border border-gray-300 px-4 py-3 text-left font-semibold">
-                  Actions
-                </th>
-              </tr>
-            ))}
-          </thead>
+      <th
+        className="border border-gray-300 px-4 py-3"
+        style={{ width: 140 }}
+      >
+        Actions
+      </th>
+    </tr>
+  ))}
+</thead>
 
           <TableBody
             table={table}

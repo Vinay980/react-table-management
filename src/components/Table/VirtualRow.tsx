@@ -45,8 +45,11 @@ export default function VirtualRow({
       }}
       className="hover:bg-gray-50"
     >
-      {/* Row Checkbox */}
-      <td className="w-14 border border-gray-300 px-4 py-3 flex items-center justify-center">
+      {/* Checkbox */}
+      <td
+        style={{ width: 50 }}
+        className="border border-gray-300 flex items-center justify-center"
+      >
         <input
           type="checkbox"
           checked={row.getIsSelected()}
@@ -58,11 +61,15 @@ export default function VirtualRow({
         const columnId = cell.column.id;
 
         // Editable Artist
-        if (columnId === "track_artist" && editingId === record.id) {
+        if (
+          columnId === "track_artist" &&
+          editingId === record.id
+        ) {
           return (
             <td
               key={cell.id}
-              className="flex-1 border border-gray-300 px-4 py-3"
+              style={{ width: cell.column.getSize() }}
+              className="border border-gray-300 px-4 py-3"
             >
               <input
                 value={editData.track_artist ?? ""}
@@ -86,7 +93,8 @@ export default function VirtualRow({
           return (
             <td
               key={cell.id}
-              className="flex-1 border border-gray-300 px-4 py-3"
+              style={{ width: cell.column.getSize() }}
+              className="border border-gray-300 px-4 py-3"
             >
               <input
                 type="number"
@@ -97,7 +105,7 @@ export default function VirtualRow({
                     track_popularity: Number(e.target.value),
                   }))
                 }
-                className="w-20 rounded border px-2 py-1"
+                className="w-full rounded border px-2 py-1"
               />
             </td>
           );
@@ -106,7 +114,8 @@ export default function VirtualRow({
         return (
           <td
             key={cell.id}
-            className="flex-1 border border-gray-300 px-4 py-3"
+            style={{ width: cell.column.getSize() }}
+            className="border border-gray-300 px-4 py-3"
           >
             {flexRender(
               cell.column.columnDef.cell,
@@ -116,7 +125,11 @@ export default function VirtualRow({
         );
       })}
 
-      <td className="w-36 border border-gray-300 px-4 py-3">
+      {/* Actions */}
+      <td
+        style={{ width: 140 }}
+        className="border border-gray-300 px-4 py-3"
+      >
         {editingId === record.id ? (
           <>
             <button

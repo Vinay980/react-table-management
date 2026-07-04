@@ -3,12 +3,17 @@ import Pagination from "../components/Pagination/Pagination";
 import SearchBar from "../components/Search/SearchBar";
 import GenreFilter from "../components/Filters/GenreFilter";
 import PopularityFilter from "../components/Filters/PopularityFilter";
+
 import { usePagination } from "../hooks/usePagination";
 import { useSorting } from "../hooks/useSorting";
 import { useSearch } from "../hooks/useSearch";
 import { useFilters } from "../hooks/useFilters";
 import { useRecords } from "../hooks/useRecords";
 import { useDebounce } from "../hooks/useDebounce";
+
+import { exportCurrentView } from "../api/records.api";
+
+import { exportCurrentViewToCSV } from "../utils/exportCurrentView";
 
 export default function Home() {
   const { page, pageSize, setPage, setPageSize } = usePagination();
@@ -17,9 +22,6 @@ export default function Home() {
 
   const { search, setSearch } = useSearch();
   const debouncedSearch = useDebounce(search, 300);
-
-  // console.log("Search:", search);
-  // console.log("Debounced:", debouncedSearch);
 
   const {
     genre,
@@ -47,155 +49,58 @@ export default function Home() {
 
   const endRecord = Math.min(page * pageSize, totalRecords);
 
-  //   console.log({
-  //   isLoading,
-  //   isFetching,
-  //   data,
-  // });
+  const handleExportCurrentView = async () => {
+    try {
+      const records = await exportCurrentView(
+        sortBy,
+        order,
+        debouncedSearch,
+        genre,
+        minPopularity,
+        maxPopularity,
+      );
 
-  import { flexRender, type Row } from "@tanstack/react-table";
-  import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
+      exportCurrentViewToCSV(records);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to export current view.");
+    }
+  };
 
-  import type { RecordItem } from "../../types/record";
+  // Loading
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
 
-  interface Props {
-    row: Row<RecordItem>;
-    virtualRow: VirtualItem;
-    rowVirtualizer: Virtualizer<HTMLDivElement, HTMLTableRowElement>;
-
-    editingId: number | null;
-    editData: Partial<RecordItem>;
-    setEditData: React.Dispatch<React.SetStateAction<Partial<RecordItem>>>;
-
-    startEditing: (record: RecordItem) => void;
-    cancelEditing: () => void;
-    handleSave: () => void;
+          <p className="text-lg font-medium text-gray-600">
+            Loading Spotify songs...
+          </p>
+        </div>
+      </div>
+    );
   }
 
-  export default function VirtualRow({
-    row,
-    virtualRow,
-    rowVirtualizer,
-    editingId,
-    editData,
-    setEditData,
-    startEditing,
-    cancelEditing,
-    handleSave,
-  }: Props) {
-    const record = row.original;
-
+  // Error
+  if (error) {
     return (
-      <tr
-        data-index={virtualRow.index}
-        ref={rowVirtualizer.measureElement}
-        style={{
-          display: "flex",
-          position: "absolute",
-          width: "100%",
-          transform: `translateY(${virtualRow.start}px)`,
-        }}
-        className="hover:bg-gray-50"
-      >
-        {/* Checkbox */}
-        <td
-          style={{ width: 50 }}
-          className="border border-gray-300 flex items-center justify-center"
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <h2 className="text-2xl font-semibold text-red-600">
+          Failed to load records
+        </h2>
+
+        <p className="text-gray-500">
+          Please check your internet connection or try again.
+        </p>
+
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
         >
-          <input
-            type="checkbox"
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-          />
-        </td>
-
-        {row.getVisibleCells().map((cell) => {
-          const columnId = cell.column.id;
-
-          // Editable Artist
-          if (columnId === "track_artist" && editingId === record.id) {
-            return (
-              <td
-                key={cell.id}
-                style={{ width: cell.column.getSize() }}
-                className="border border-gray-300 px-4 py-3"
-              >
-                <input
-                  value={editData.track_artist ?? ""}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      track_artist: e.target.value,
-                    }))
-                  }
-                  className="w-full rounded border px-2 py-1"
-                />
-              </td>
-            );
-          }
-
-          // Editable Popularity
-          if (columnId === "track_popularity" && editingId === record.id) {
-            return (
-              <td
-                key={cell.id}
-                style={{ width: cell.column.getSize() }}
-                className="border border-gray-300 px-4 py-3"
-              >
-                <input
-                  type="number"
-                  value={editData.track_popularity ?? ""}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      track_popularity: Number(e.target.value),
-                    }))
-                  }
-                  className="w-full rounded border px-2 py-1"
-                />
-              </td>
-            );
-          }
-
-          return (
-            <td
-              key={cell.id}
-              style={{ width: cell.column.getSize() }}
-              className="border border-gray-300 px-4 py-3"
-            >
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </td>
-          );
-        })}
-
-        {/* Actions */}
-        <td style={{ width: 140 }} className="border border-gray-300 px-4 py-3">
-          {editingId === record.id ? (
-            <>
-              <button
-                onClick={handleSave}
-                className="mr-2 rounded bg-green-600 px-3 py-1 text-white"
-              >
-                Save
-              </button>
-
-              <button
-                onClick={cancelEditing}
-                className="rounded bg-gray-500 px-3 py-1 text-white"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => startEditing(record)}
-              className="rounded bg-blue-600 px-3 py-1 text-white"
-            >
-              Edit
-            </button>
-          )}
-        </td>
-      </tr>
+          Retry
+        </button>
+      </div>
     );
   }
 
@@ -204,17 +109,11 @@ export default function Home() {
       <h1 className="mb-6 text-3xl font-bold">Spotify Songs</h1>
 
       <div className="mb-6 flex flex-wrap items-end gap-4">
-        <div className="flex-1 min-w-[250px]">
+        <div className="min-w-[250px] flex-1">
           <SearchBar value={search} onChange={setSearch} />
         </div>
 
         <GenreFilter value={genre} onChange={setGenre} />
-
-        {debouncedSearch && (
-          <p className="mb-3 text-sm text-blue-600">
-            Searching for "<strong>{debouncedSearch}</strong>"
-          </p>
-        )}
 
         <PopularityFilter
           min={minPopularity}
@@ -223,6 +122,21 @@ export default function Home() {
           onMaxChange={setMaxPopularity}
         />
       </div>
+
+      <div className="mb-4 flex justify-end">
+        <button
+          onClick={handleExportCurrentView}
+          className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+        >
+          Export Current View
+        </button>
+      </div>
+
+      {debouncedSearch && (
+        <p className="mb-3 text-sm text-blue-600">
+          Searching for <strong>"{debouncedSearch}"</strong>
+        </p>
+      )}
 
       {isFetching && <p className="mb-4 text-sm text-blue-600">Updating...</p>}
 
@@ -234,10 +148,8 @@ export default function Home() {
       </div>
 
       {data?.records.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 py-16 text-center">
-          <h2 className="text-xl font-semibold text-gray-700">
-            No records found
-          </h2>
+        <div className="rounded-lg border border-dashed border-gray-300 py-20 text-center">
+          <h2 className="text-2xl font-semibold">No records found</h2>
 
           <p className="mt-2 text-gray-500">
             Try changing your search or filters.
@@ -254,7 +166,7 @@ export default function Home() {
 
       <Pagination
         page={page}
-        total={data?.total ?? 0}
+        total={totalRecords}
         pageSize={pageSize}
         onPageChange={setPage}
         onPageSizeChange={(size) => {
